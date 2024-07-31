@@ -31,7 +31,10 @@ class AuthController(
     fun signUp(@Valid @RequestBody signUpRequest: SignUpRequest) : ResponseEntity<Any> {
         if (playerService.getPlayer(signUpRequest.username).isPresent) return ResponseEntity("User already exists", HttpStatus.BAD_REQUEST)
 
-        val player: Player = Player(signUpRequest.username, signUpRequest.uuid, encoder.encode(signUpRequest.password))
+        val player: Player = Player(
+            username =  signUpRequest.username,
+            uuid =  signUpRequest.uuid,
+            password =  encoder.encode(signUpRequest.password))
 
         val createdPlayer = playerService.savePlayer(player)
 
@@ -40,17 +43,16 @@ class AuthController(
 
     @PostMapping("/signin")
     fun signIn(@Valid @RequestBody signInRequest: SignInRequest) : ResponseEntity<Any> {
-        println("Test")
+
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(signInRequest.username, signInRequest.password)
         )
-        println("Test2")
+
         if (!authentication.isAuthenticated) return ResponseEntity("Somethings went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
-        println("Test3")
+
         val userDetails: UserDetails = authentication.principal as UserDetails
-        println("Test4")
         val jwtCookie: ResponseCookie = jwtService.generateCookie(userDetails)
-        println("Test5")
+
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
             .body(userDetails);
     }

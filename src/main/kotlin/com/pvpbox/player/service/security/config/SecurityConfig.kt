@@ -56,7 +56,7 @@ class SecurityConfig() {
     fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val source = UrlBasedCorsConfigurationSource()
         val config = CorsConfiguration()
-        config.allowedOrigins = listOf("http://localhost:5173")  // Remplacez par l'URL de votre application Svelte
+        config.allowedOrigins = listOf("http://localhost:5173")  // Application url
         config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         config.allowedHeaders = listOf("*")
         config.allowCredentials = true
@@ -82,6 +82,43 @@ class SecurityConfig() {
                 registry.requestMatchers("/api/test/permitall").permitAll()
                 registry.requestMatchers("/api/test/mod").hasAnyRole("MOD", "ADMIN")
                 registry.requestMatchers("/api/test/admin").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/profiles/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/profiles/**").authenticated()
+                registry.requestMatchers(HttpMethod.PUT,"/api/profiles/**").authenticated()
+                registry.requestMatchers(HttpMethod.DELETE,"/api/profiles/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/bankaccount/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/bankaccount/**").authenticated()
+                registry.requestMatchers(HttpMethod.PUT,"/api/bankaccount/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.DELETE,"/api/bankaccount/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/transations/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/transations/**").authenticated()
+
+                registry.requestMatchers(HttpMethod.GET,"/api/kdas/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/kdas/**").authenticated()
+                registry.requestMatchers(HttpMethod.PUT,"/api/kdas/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.DELETE,"/api/kdas/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/attributes/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/attributes/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.PUT,"/api/attributes/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.DELETE,"/api/attributes/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/ranks/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/ranks/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.PUT,"/api/ranks/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.DELETE,"/api/ranks/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/equipements/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/equipements/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.PUT,"/api/equipements/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.DELETE,"/api/equipements/**").hasRole("ADMIN")
+
+                registry.requestMatchers(HttpMethod.GET,"/api/profilestoattributes/**").authenticated()
+                registry.requestMatchers(HttpMethod.POST,"/api/profilestoattributes/**").hasRole("ADMIN")
+                registry.requestMatchers(HttpMethod.PUT,"/api/profilestoattributes/**").hasRole("ADMIN")
                 registry.anyRequest().authenticated()
             }
             .build()

@@ -1,6 +1,8 @@
 package com.pvpbox.player.service.models.player
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.pvpbox.player.service.models.Role
+import com.pvpbox.player.service.models.profile.Profile
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
@@ -19,13 +21,9 @@ data class Player(
     var uuid: UUID,
     @NotBlank
     var password: String,
-    var role: Role = Role.USER
-) {
-    constructor(username: String, uuid: UUID, password: String) : this (
-        playerId = null,
-        username = username,
-        uuid = uuid,
-        password = password,
-        role = Role.USER
-    )
-}
+    var role: Role = Role.USER,
+
+    @OneToMany(mappedBy = "player", cascade = [CascadeType.ALL])
+    @JsonIgnoreProperties("player")
+    var profiles: List<Profile> = mutableListOf()
+)
